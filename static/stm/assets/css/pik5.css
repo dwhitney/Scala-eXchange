@@ -1,0 +1,69 @@
+/*
+	p5.css
+	Don't edit this file unless you think you know what you are doing
+*/
+html, body, #frame, #framecontainer {
+	height:100%;
+}
+body {
+	font-size:100%;
+	margin:0;
+	padding:0;
+}
+
+
+/* Layout */
+#frame {
+	position:relative;
+	margin:0 auto;
+}
+#framecontainer {
+	position:absolute;
+	top:0;
+	left:0;
+}
+.pik5-slide {
+	width:100%;
+	height:100%;
+	float:left;
+	margin:0;
+	padding:0;
+	overflow:hidden;
+}
+
+
+/* Header and footer */
+#header {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	z-index:1;
+}
+
+
+/* End of presentation */
+#end {
+	background:#000;
+	position:relative;
+	z-index:1337;
+}
+#end p {
+	color:#FFF;
+	margin-top:5em;
+}
+
+
+/* Overlay */
+.overlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1337;
+	background: #000;
+}
+.overlay-presenter {
+	background: rgba(0, 0, 0, 0.75) !important;
+}

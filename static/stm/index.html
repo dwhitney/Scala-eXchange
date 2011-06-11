@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Pik5 - HTML5 presentation framework</title>
+	<meta http-equiv="expires" content="0"> <!-- DO NOT DELETE THIS! -->
+	<link rel="stylesheet" href="assets/prettify/prettify.css"> <!-- You can remove this if your presentation is not about programming -->
+	<link rel="stylesheet" media="screen, projection" href="assets/css/pik5.css"> <!-- DO NOT DELETE THIS! -->
+	<link rel="stylesheet" media="screen, projection" href="themes/pik5/style.css"> <!-- Use this to style your presentation -->
+	<link rel="stylesheet" media="print" href="themes/pik5/print.css"> <!-- Use this to make your presentation print well -->
+	<script> var pik5_base_dir = ''; </script> <!-- Change this if this presentation file is NOT in the same folder as all other P5 files and folders -->
+	<script src="assets/prettify/prettify.js"></script> <!-- You can remove this if your presentation is not about programming -->
+	<script src="assets/js/jquery.js"></script> <!-- DO NOT DELETE THIS! -->
+	<script src="assets/js/shared.js"></script> <!-- DO NOT DELETE THIS! -->
+	<script src="assets/js/pik5.js"></script> <!-- DO NOT DELETE THIS! -->
+	<script src="custom.js"></script> <!-- Use this for your own slide programming -->
+	<base target="_blank">
+</head>
+<body onload="prettyPrint()"> <!-- You can remove the onload property if your presentation is not about programming -->
+
+
+<div id="header">
+	<h1>PIK<sup>5</sup> - HTML5 presentation framework</h1>
+	<a href="http://pik5.peterkroener.de/">http://pik5.peterkroener.de/</a>
+</div>
+
+
+<div id="frame"> <!-- DO NOT DELETE THIS! -->
+
+
+<div id="framecontainer"> <!-- DO NOT DELETE THIS! -->
+
+
+<div class="pik5-slide" id="start">
+	<h2>PIK<sup>5</sup></h2>
+	<p>
+		HTML5 presentation framework (beta)
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Features</h2>
+	<ul>
+		<li>100% HTML5, CSS and JavaScript (jQuery)</li>
+		<li>Multiple presentation views and presenter mode</li>
+		<li>Programmable slides</li>
+		<li>Built-in code highlighting (<a href="http://code.google.com/p/google-code-prettify/">google-code-prettify</a>)</li>
+		<li>Supported/tested hardware: Logitech Presenter R400</li>
+	</ul>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Why?</h2>
+	<ul>
+		<li>Infinitly hackable</li>
+		<li>Great performance in modern browsers</li>
+		<li>Easy embedding of web pages, media, youtube videos&nbsp;&hellip;</li>
+	</ul>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>How to use</h2>
+	<ol>
+		<li>Open index.html and edit/add slides (<code class="prettyprint">&lt;div class="pik5-slide"&gt;</code>)</li>
+		<li>Add styling to style.css and print.css</li>
+		<li>If needed, programm the slides (see next slides)</li>
+		<li>Navigate slides using the arrow keys. You can hide the presentation using the F5 or ESC key</li>
+		<li>Run the presentation in Firefox 3.6+, Safari 5+, Opera 10.60+ or Chrome 8+ (recommended)</li>
+	</ol>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Programming presentations</h2>
+	<ul>
+		<li>An <code>activate</code> event is fired on the slides when they are shown and a <code>deactivate</code> event when hidden</li>
+		<li>A <code>change</code> event is fired on the window object when slides change</li>
+	</ul>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Simple programming example</h2>
+	<pre class="prettyprint">jQuery(document).ready(function($){
+    $('#demo').bind({
+        'activate': function(){
+            $('#demobox').show('slow').addClass('demo');
+        },
+        'deactivate': function(){
+            $('#demobox').hide().removeClass('demo');
+        }
+    });
+});</pre>
+</div>
+
+
+<div class="pik5-slide" id="demo">
+	<h2>Programming demo</h2>
+	<p id="demobox">
+		Hello World!
+	</p>
+	<script>
+		jQuery(document).ready(function($){
+			$('#demobox').hide();
+			$('#demo').bind({
+				'activate': function(){
+					$('#demobox').show('slow').addClass('demo');
+				},
+				'deactivate': function(){
+					$('#demobox').hide().removeClass('demo');
+				}
+			});
+		});
+	</script>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Multiple presentation views</h2>
+	<p>
+		Open the presentation file in new browser windows to create multiple views for the presentation. The windows will synchronize
+		 automatically. Multiple presentation views require Chrome 8 or newer.
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Code highlighting</h2>
+	<p>
+		PIK5 comes with <a href="http://code.google.com/p/google-code-prettify/">google-code-prettify</a>, a JavaScript
+		library that lets you add syntax highlighting to code snippets in a HTML page. Just add
+		<code class="prettyprint">class="prettyprint"</code> to your <code class="prettyprint">&lt;pre&gt;</code> and
+		<code class="prettyprint">&lt;code&gt;</code> elements. See <a href="http://google-code-prettify.googlecode.com/svn/trunk/README.html">the
+		readme</a> for more information.
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Presenter view</h2>
+	<p>
+		Navigate to <code>presenter.html</code> in a new window to use the presenter view. The presenter view offers more
+		control elements, shows a timer and lets you see the currently displayed slide and which slide comes next. The
+		presenter view currently requires Chrome 8 or newer.
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Controls</h2>
+	<ul>
+		<li>Use the left and right arrow keys to navigate through the slides</li>
+		<li>The presenter view offers a drop down menu for all slides in the presentation</li>
+		<li>The F5 key hides the presentation</li>
+		<li>Supported/tested hardware: Logitech Presenter R400</li>
+	</ul>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Changing presentations</h2>
+	<p>
+		In case you want to navigate from one set of slides to another, use the <code class="prettyprint">pik5.goTo()</code> function in an
+		<code>&lt;a&gt;</code> element's <code>onclick</code> handler:
+	</p>
+	<pre class="prettyprint">&lt;a target="_self" href="slides2.html"
+    onclick="pik5.goTo(this.href, true)"&gt;Load new slides&lt;/a&gt;</pre>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Organizing presentations</h2>
+	<p>
+		If you have more than one presentation to run from Pik5, it's recommended to place them an their resources in their own folders. Change
+		the paths to the scripts and css files and the <code>pik5_base_dir</code> variable in the presentation's
+		<code class="prettyprint">&lt;head&gt;</code> accordingly.
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Reserved css classes</h2>
+	<ul>
+		<li><code>pik5-slide</code>: slide container</li>
+		<li><code>pik5-center</code>: centers a element horizontally and vertically in the current slide</li>
+		<li><code>prettyprint</code>: adds syntax highlighting to <code class="prettyprint">&lt;pre&gt;</code> and
+		<code class="prettyprint">&lt;code&gt;</code> elements</li>
+	</ul>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Theming</h2>
+	<p>
+		Themes for PIK5 are simple css files that are placed in the <code>themes</code> folder.
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Troubleshooting and bugs</h2>
+	<ul>
+		<li>If slides appear with the wrong font size in the presenter, refresh the presenter view</li>
+		<li>The presenter doesn't work in Chrome when accessed via <code>file://</code></li>
+		<li>To prevent caching issues (the iframes in the presenter view might show an old, cached version of your
+		presentation) clear your browser's cache before presenting.</li>
+	</ul>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>To do</h2>
+	<ol>
+		<li>Allow control and configuration of the timer</li>
+		<li>Allow configuration of slide transistion effects</li>
+		<li>Make synchronization work in more browsers (Opera 11 and Safari 5 should be possible)</li>
+		<li>Add more themes</li>
+	</ol>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Links</h2>
+	<ul>
+		<li><a href="https://github.com/SirPepe/Pik5/downloads">Download</a></li>
+		<li><a href="https://github.com/SirPepe/Pik5">Github repository</a></li>
+		<li><a href="http://pik5.peterkroener.de">Web site</a></li>
+		<li><a href="license.txt">MIT license</a></li>
+		<li><a href="mailto:peter@peterkroener.de">Contact me!</a></li>
+	</ul>
+</div>
+
+
+</div> <!-- End #framecontainer. DO NOT DELETE THIS! -->
+
+
+</div> <!-- End #frame. DO NOT DELETE THIS! -->
+
+
+</body>
+</html>
+

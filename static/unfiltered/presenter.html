@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Pik5 Presenter View</title>
+		<link rel="stylesheet" href="assets/css/pik5.css">
+		<link rel="stylesheet" href="assets/css/presenter.css">
+		<script src="assets/js/jquery.js"></script>
+		<script src="assets/js/shared.js"></script>
+		<script src="assets/js/presenter.js"></script>
+	</head>
+	<body>
+
+		<!--
+			This file provides the presenter view
+			Don't edit anything unless you really want to break the presenter view!
+		-->
+
+		<div id="header">
+			<div class="wrapper">
+				<h1>Presenter view</h1>
+				<div id="timecontainer">
+					<span id="timer"><span id="time">00:00:00</span> | <span id="now">00:00:00</span></span>
+				</div>
+			</div>
+		</div>
+
+		<div id="wrapper">
+
+			<div id="viewer">
+				<div id="presenter-current">
+					<h2>Current slide (<b id="currentindex">1</b> / <span id="numslides">0</span>)</h2>
+					<iframe id="current" src="" width="570" height="428"></iframe>
+				</div>
+				<div id="presenter-next">
+					<h2>Next slide</h2>
+					<iframe id="next" src="" width="392" height="294"></iframe>
+				</div>
+			</div>
+
+			<div id="presenterfooter">
+				<div id="progress"></div>
+				<p id="controls">
+					<label for="slideselect">Select slide</label>
+					<button id="slideback">&laquo;</button>
+					<select id="slideselect"></select>
+					<button id="slidenext">&raquo;</button>
+				</p>
+			</div>
+
+		</div>
+
+
+	</body>
+</html>

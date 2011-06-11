@@ -1,0 +1,34 @@
+/*
+	print.css
+	This controls how your presentation looks on dead trees. Edit away!
+*/
+
+
+/* Basics */
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	background:#FFF;
+	color:#000;
+	line-height:1.4;
+}
+.prettyprint {
+	border:none !important;
+	padding:0 !important;
+}
+
+
+/* Overrule the js style changes */
+body {
+	font-size:120% !important;
+}
+#frame, #framecontainer, div.slide {
+	width:100% !important;
+	overflow:visible !important;
+}
+#end {
+	display:none;
+}
+.pik5-center {
+	display:block !important;
+	position:static !important;
+}

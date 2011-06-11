@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Unfiltered Presentation by Dustin Whitney</title>
+	<meta http-equiv="expires" content="0"> <!-- DO NOT DELETE THIS! -->
+	<link rel="stylesheet" href="assets/prettify/prettify.css"> <!-- You can remove this if your presentation is not about programming -->
+	<link rel="stylesheet" media="screen, projection" href="assets/css/pik5.css"> <!-- DO NOT DELETE THIS! -->
+	<link rel="stylesheet" media="screen, projection" href="themes/pik5/style.css"> <!-- Use this to style your presentation -->
+	<link rel="stylesheet" media="print" href="themes/pik5/print.css"> <!-- Use this to make your presentation print well -->
+	<script> var pik5_base_dir = ''; </script> <!-- Change this if this presentation file is NOT in the same folder as all other P5 files and folders -->
+	<script src="assets/prettify/prettify.js"></script> <!-- You can remove this if your presentation is not about programming -->
+	<script src="assets/js/jquery.js"></script> <!-- DO NOT DELETE THIS! -->
+	<script src="assets/js/shared.js"></script> <!-- DO NOT DELETE THIS! -->
+	<script src="assets/js/pik5.js"></script> <!-- DO NOT DELETE THIS! -->
+	<script src="custom.js"></script> <!-- Use this for your own slide programming -->
+	<base target="_blank">
+	<style type="text/css">
+	</style>
+</head>
+<body onload="prettyPrint()"> <!-- You can remove the onload property if your presentation is not about programming -->
+
+
+<div id="header">
+	<h1>Unfiltered Presentation for Scala eXchange</h1>
+	<a href="http://twitter.com/dustinwhitney">@dustinwhitney</a>
+</div>
+
+
+<div id="frame"> <!-- DO NOT DELETE THIS! -->
+
+
+<div id="framecontainer"> <!-- DO NOT DELETE THIS! -->
+
+
+<div class="pik5-slide" id="start">
+  <h2><a href="https://github.com/n8han/Unfiltered">Unfiltered</a></h2>
+	<p style="font-size:x-large">Dustin Whitney, CTO Trust Metrics, <a href="http://twitter.com/dustinwhtney">@dustinwhitney</a></p>
+	<p style="font-size:x-large">
+		Unfiltered is a toolkit for servicing HTTP requests in Scala. It provides a consistent vocabulary for handing requests on various server backends, but does not interfere with direct access to their native interfaces.
+	</p>
+	<p style="font-size:x-large">
+		Created by <a href="http://twitter.com/n8han">@n8han (Nathan Hamblen)</a> and <a href="http://twitter.com/softprops">@softprops (Doug Tangren)</a>
+	</p>
+</div>
+
+
+<div class="pik5-slide">
+	<h2>Hello, World!</h2>
+	<a href="/hello.html">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint">
+import unfiltered.request.Path
+import unfiltered.response.ResponseString
+import unfiltered.jetty.Http
+import unfiltered.filter.Planify
+
+object Server extends App{
+
+  Http(8080).filter(Planify{
+    case Path("/hello.html") => ResponseString("Hello, World!")
+  }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Response Functions and Combinators</h2>
+  <a href="/unfiltered/example2.html">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint">
+object Server extends App{
+
+  Http(8080).filter(Planify{
+    case Path("/unfiltered/example2.html") => 
+      Ok ~> ContentType("application/json") 
+      ~> ResponseString((0 to 100).mkString("[",",","]"))
+  }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Request Matchers</h2>
+  <a href="/unfiltered/example3/7">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:large">
+object Server extends App{
+  
+  object IntOnly{
+    def unapply(str: String): Option[Int] = {
+      try{ Some(str.toInt)} catch { case _ => None}
+    }
+  }
+
+  Http(8080).filter(Planify{
+    case GET(Path(Seg("unfiltered" :: "example3" :: IntOnly(num) :: Nil))) =>
+      ResponseString(num)
+  }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Request Matchers Continued...</h2>
+  <a href="/unfiltered/example4.html">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:large">
+object Server extends App{
+
+  Http(8080).filter(Planify{
+    case Path("/unfiltered/example4.html") & BasicAuth(username, "password") => 
+      ResponseString("Welcome: %s" format username)
+      
+    case Path("/unfiltered/example4.html") =>
+      WWWAuthenticate("Basic realm=\"Secure Area\"") ~> Unauthorized
+  }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Request Matchers Continued...</h2>
+  <a href="/unfiltered/example5.html">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:large">
+object Server extends App{
+
+  Http(8080).filter(Planify{
+    case request @ Path("/unfiltered/example5.html") => 
+      request match {
+        case BasicAuth(username, "password5") => ResponseString("Welcome: %s" format username)
+        case _ => WWWAuthenticate("Basic realm=\"Secure Area\"") ~> Unauthorized
+      }   
+  }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Request Matchers Continued...</h2>
+  <a href="/unfiltered/example6.html?number=123">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:large">
+object Server extends App{
+
+  object Number extends Params.Extract("number", Params.first ~> Params.int)
+
+  Http(8080).filter(Planify{
+    
+    case Path("/unfiltered/example6.html") & Params(Number(num)) => 
+      ResponseString(num.toString)
+    
+    case Path("/unfiltered/example6.html") & Params(params) => 
+      val json = (for(key <- params.keySet) yield {
+        "\"%s\":%s".format(key, params(key).map("\"%s\"".format(_:String)).mkString("[",",", "]"))
+      }).mkString("{", ",", "}")
+      ContentType("application/json") ~> ResponseString(json)
+  }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Request Matchers Continued...</h2>
+  <a href="/unfiltered/example7.html?username=Dustin&password=password">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:medium">
+object Server extends App{
+
+  Http(8080).filter(Planify{
+    case request @ Path("/unfiltered/example7.html") =>
+      import QParams._
+      val expected = for{
+        username <- lookup("username") is(required("required"))
+        password <- lookup("password") 
+              .is(required("required")) 
+              .is(pred( _ == "password", i => "incorrect password!"))
+      } yield {
+        ResponseString("Welcome " + username.get + " ")
+      }
+      
+      val Params(params) = request
+      expected(params) orFail{ fails =>
+        BadRequest ~> ContentType("application/json") ~> ResponseString(
+          fails.map({ fail => "{\"%s\":\"%s\"}".format(fail.name, fail.error)}).mkString("[",",", "]")
+        )
+      }
+    }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+  <h2>Modules</h2>
+  <ul>
+    <li>unfiltered-netty</li>
+    <li>unfiltered-websockets</li>
+    <li>unfiltered-jetty</li>
+    <li>unfiltered-uploads</li>
+    <li>unfiltered-spec</li>
+    <li>unfiltered-scalatest</li>
+    <li>unfiltered-json</li>
+    <li>unfiltered-scalate</li>
+    <li>unfiltered-oauth</li>    
+  </ul>
+</div>
+
+<div class="pik5-slide">
+  <h2>Etc.</h2>
+  <ul>
+    <li>github: <a href="https://github.com/n8han/Unfiltered">https://github.com/n8han/Unfiltered</a></li>
+    <li>documentation: <a href="http://unfiltered.databinder.net/Unfiltered.html">http://unfiltered.databinder.net/Unfiltered.html</a></li>
+  </ul>
+</div>
+
+</div> <!-- End #framecontainer. DO NOT DELETE THIS! -->
+
+
+</div> <!-- End #frame. DO NOT DELETE THIS! -->
+
+
+</body>
+</html>
+

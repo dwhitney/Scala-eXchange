@@ -1,0 +1,139 @@
+/*
+	style.css
+	This controls how your presentation looks. Edit away!
+*/
+
+
+/* Basics */
+body {
+	font-family:"lemonde-sans-1","lemonde-sans-2", Verdana, Arial, sans-serif;
+	background:#F7F7F5;
+	color:#211B1B;
+	line-height:1.6;
+}
+h2 {
+	font-family:"athelas-1", "athelas-2", "Times New Roman", serif;
+	font-weight:normal;
+	text-align:center;
+	font-size:1.9em;
+	margin:1.5em 0.6em 1em 0.6em;
+}
+p, ul, ol, pre {
+	font-size:1.1em;
+	margin:1em 1.55em;
+}
+ul ul, ol ol, ul ol, ol ul {
+	font-size:1em;
+	margin:0.2em 0.75em 0.2em 0em;
+}
+li {
+	margin:0.2em 0;
+}
+a {
+	text-decoration:none;
+	color:#912121;
+}
+a:link, a:visited {
+	border-bottom:0.1em solid #E0DBD7;
+}
+a:hover {
+	border-bottom:0.1em solid transparent;
+}
+a:active {
+	color:#FFF;
+	background:#912121;
+	border-bottom:2px solid transparent;
+}
+iframe {
+	border:none;
+}
+pre {
+	font-family:"DejaVu Sans Mono", monospace;
+	font-size:0.8em;
+}
+blockquote, q {
+	font-style:italic;
+}
+.center {
+	text-align:center;
+}
+
+
+/* Header */
+#header {
+	text-align:left;
+	border-top:0.2em solid #912121;
+}
+#header h1 {
+	font-size:0.5em;
+	font-weight:normal;
+	font-family:"athelas-1", "athelas-2", "Times New Roman", serif;
+	text-transform:uppercase;
+	margin:1em;
+	padding:0 6%;
+	opacity:0.6;
+}
+#header h1 span {
+	float:right;
+}
+mark {
+	background:none;
+	border-bottom:0.25em solid red;
+}
+
+
+/* Style for slides */
+.pik5-slide {
+	background:#FFF;
+}
+#frame {
+	-webkit-box-shadow: 4px 4px 20px rgba(48, 43, 43, 0.25);
+	-moz-box-shadow: 4px 4px 20px rgba(48, 43, 43, 0.25);
+	box-shadow: 4px 4px 20px rgba(48, 43, 43, 0.25);
+}
+#end, #end p {
+	background:#FFF;
+	z-index:0;
+	color:#211B1B !important;
+	text-align:center;
+	font-family:"athelas-1", "athelas-2", "Times New Roman", serif;
+	text-transform:uppercase;
+}
+#start div {
+	position:relative;
+	text-align:center;
+}
+#start div h2 {
+	position:absolute;
+	bottom:0;
+	left:0;
+	right:0;
+	background:rgba(255, 255, 255, 0.8);
+}
+
+
+/* Special elements */
+.shadow {
+	border:0.1em solid #FFF;
+	-webkit-box-shadow: 4px 4px 20px rgba(48, 43, 43, 0.25);
+	-moz-box-shadow: 4px 4px 20px rgba(48, 43, 43, 0.25);
+	box-shadow: 4px 4px 20px rgba(48, 43, 43, 0.25);
+}
+
+
+/* Code highlighting for dark backgrounds */
+.str { color:#A61111; }
+.kwd { font-weight:bold; }
+.com { color:#6B6; font-style:italic; }
+.typ { color:#195FA6 font-weight:bold }
+.lit { color:#099 }
+.pun { color:#777 }
+.pln { color:#000 }
+.tag { color:#08C; font-weight:bold }
+.atn { color:#047 }
+.atv { color:#0A0 }
+.dec { color:#F0F; font-style:italic }
+pre.prettyprint { padding:0; border:none }
+ol.linenums { margin-top:0; margin-bottom:0 }
+li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8 { list-style:none }
+li.L1,li.L3,li.L5,li.L7,li.L9 { background:#111 }
