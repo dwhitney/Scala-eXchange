@@ -1,6 +1,7 @@
-import java.util.concurrent._
-import scala.actors.Actor
+//import java.util.concurrent._
+/*import scala.actors.Actor
 import scala.actors.Actor._
+import scala.concurrent.stm._
 
 package stm.example1{
   
@@ -106,3 +107,107 @@ package stm.example5{
   }
   
 }
+
+package stm.example6{
+  
+  object AccountManager{
+
+    def transfer(from: Account, to: Account, amount: Int): (Account, Account) = {
+      if(from.balance > amount){
+        (from.debit(amount), to.credit(amount))
+      } else throw new RuntimeException("!")
+    }
+
+  }
+
+  case class Account(accountNo: String, balance: Int){
+    def credit(amount: Int) = this.copy(balance = (balance + amount))
+    def debit(amount: Int) = this.copy(balance = (balance - amount))
+  }
+  
+}
+
+package stm.example7{
+  
+  object AccountManager{
+
+    val accountsRef = Ref(Map("from" -> Account("from", 500), "to" -> Account("to", 500) ))
+
+    def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+      atomic{ implicit t =>
+        var accounts = accountsRef()
+        val from = accounts(fromNo)
+        val to = accounts(toNo)
+        if(from.balance > amount){
+          accounts = accounts + (to.accountNo -> to.credit(amount))
+          accounts = accounts + (from.accountNo -> from.debit(amount))
+          accountsRef() = accounts
+        }
+      }
+    }
+
+  }
+
+  case class Account(accountNo: String, balance: Int){
+    def credit(amount: Int) = this.copy(balance = (balance + amount))
+    def debit(amount: Int) = this.copy(balance = (balance - amount))
+  }
+}
+
+package stm.example8{
+  
+  object AccountManager{
+
+    val accountsRef = Ref(Map("from" -> Account("from", 500), "to" -> Account("to", 500) ))
+
+    def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+      var accounts = atomic{ implicit t => accountsRef() }
+      val from = accounts(fromNo)
+      val to = accounts(toNo)
+
+      if(from.balance > amount){
+        accounts = accounts + (to.accountNo -> to.credit(amount))
+        accounts = accounts + (from.accountNo -> from.debit(amount))
+        atomic{ implicit t => accountsRef() = accounts }
+      }
+    }
+
+  }
+
+  case class Account(accountNo: String, balance: Int){
+    def credit(amount: Int) = this.copy(balance = (balance + amount))
+    def debit(amount: Int) = this.copy(balance = (balance - amount))
+  }
+}
+
+package stm.example9{
+  
+  object AccountManager{
+
+    val accountsRef = Ref(Map("from" -> new Account("from", 500), "to" -> new Account("to", 500) ))
+
+    def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+      val accounts = atomic{ implicit t => 
+        var accounts = accountsRef() 
+        val from = accounts(fromNo)
+        val to = accounts(toNo)
+        if(from.balance > amount){
+          from.debit(amount)
+          to.credit(amount)
+          accounts = accounts + (from.accountNo -> from)
+          accounts = accounts + (to.accountNo -> to)
+        }
+        accountsRef() = accounts
+      }
+    }
+
+  }
+
+  class Account(val accountNo: String, beginningBalance: Int){
+    private var _balance = beginningBalance
+    def balance = this.synchronized{ _balance }
+    def credit(amount: Int) = this.synchronized{ _balance = _balance + amount }
+    def debit(amount: Int) = this.synchronized { _balance = _balance - amount }
+    override def toString = "Account(%s,%s)".format(accountNo, _balance)
+  }
+}*/

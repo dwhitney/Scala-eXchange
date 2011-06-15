@@ -2,8 +2,11 @@ import unfiltered.request._
 import unfiltered.response._
 import unfiltered.jetty._
 import unfiltered.filter.Planify
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json.JsonParser._
+import net.liftweb.json.JsonAST._
 
-object Server extends App{
+object Server extends Application{
   val server = unfiltered.jetty.Http(8080).context("/static"){ ctx: ContextBuilder =>
     ctx.resources(new java.net.URL("file:///Users/molecule/development/scala/scalaexchange/static"))
   }
@@ -24,7 +27,7 @@ object Server extends App{
   
   lazy val example2 = Planify{
     case Path("/unfiltered/example2.html") => 
-      Ok ~> ContentType("application/json") ~> ResponseString((0 to 100).mkString("[",",","]"))
+      Ok ~> ContentType("application/json") ~> Json((0 to 100))
   }
   
   object IntOnly{
@@ -61,10 +64,8 @@ object Server extends App{
       ResponseString(num.toString)
     
     case Path("/unfiltered/example6.html") & Params(params) => 
-      val json = (for(key <- params.keySet) yield {
-        "\"%s\":%s".format(key, params(key).map("\"%s\"".format(_:String)).mkString("[",",", "]"))
-      }).mkString("{", ",", "}")
-      ContentType("application/json") ~> ResponseString(json)
+      val json = for(key <- params.keySet.toList) yield JField(key, params(key))
+      Json(json)
   }
   
   lazy val example7 = Planify{
@@ -81,9 +82,7 @@ object Server extends App{
       
       val Params(params) = request
       expected(params) orFail{ fails =>
-        BadRequest ~> ContentType("application/json") ~> ResponseString(
-          fails.map({ fail => "{\"%s\":\"%s\"}".format(fail.name, fail.error)}).mkString("[",",", "]")
-        )
+        BadRequest ~> Json(fails.map({ fail => JField(fail.name, JString(fail.error)) }))
       }
   }
 }

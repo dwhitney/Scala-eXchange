@@ -75,8 +75,7 @@ object Server extends App{
 
   Http(8080).filter(Planify{
     case Path("/unfiltered/example2.html") => 
-      Ok ~> ContentType("application/json") 
-      ~> ResponseString((0 to 100).mkString("[",",","]"))
+      Ok ~> ContentType("application/json") ~> Json((0 to 100))
   }).run
 
 }
@@ -137,8 +136,10 @@ object Server extends App{
   Http(8080).filter(Planify{
     case request @ Path("/unfiltered/example5.html") => 
       request match {
-        case BasicAuth(username, "password5") => ResponseString("Welcome: %s" format username)
-        case _ => WWWAuthenticate("Basic realm=\"Secure Area\"") ~> Unauthorized
+        case BasicAuth(username, "password5") => 
+          ResponseString("Welcome: %s" format username)
+        case _ => 
+          WWWAuthenticate("Basic realm=\"Secure Area\"") ~> Unauthorized
       }   
   }).run
 
@@ -162,10 +163,8 @@ object Server extends App{
       ResponseString(num.toString)
     
     case Path("/unfiltered/example6.html") & Params(params) => 
-      val json = (for(key <- params.keySet) yield {
-        "\"%s\":%s".format(key, params(key).map("\"%s\"".format(_:String)).mkString("[",",", "]"))
-      }).mkString("{", ",", "}")
-      ContentType("application/json") ~> ResponseString(json)
+      val json = for(key <- params.keySet.toList) yield JField(key, params(key))
+      Json(json)
   }).run
 
 }
@@ -194,11 +193,9 @@ object Server extends App{
       
       val Params(params) = request
       expected(params) orFail{ fails =>
-        BadRequest ~> ContentType("application/json") ~> ResponseString(
-          fails.map({ fail => "{\"%s\":\"%s\"}".format(fail.name, fail.error)}).mkString("[",",", "]")
-        )
+        BadRequest ~> Json(fails.map({ fail => JField(fail.name, JString(fail.error)) }))
       }
-    }).run
+  }).run
 
 }
     </pre>

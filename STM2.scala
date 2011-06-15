@@ -1,4 +1,4 @@
-package stm.example44
+/*package stm.example44
 
 import java.util.concurrent._
 import scala.actors.Actor
@@ -60,3 +60,4 @@ object STM extends App{
   
   threadPool.shutdown
 }
+*/

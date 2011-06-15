@@ -1,19 +1,24 @@
-package stm.example
+/*package stm.example
 
-import java.util.concurrent._
-import scala.util.Random._
+import scala.concurrent.stm._
+import java.util.concurrent.{Executors, Callable}
 
 object AccountManager{
   
-  def transfer(from: Account, to: Account, amount: Int): Unit = {
-    val (lockOne, lockTwo) = if(from.accountNo < to.accountNo) (from, to) else (to, from)
-    lockOne.synchronized{
-      lockTwo.synchronized{
-        if(from.balance > amount){
-          to.credit(amount)
-          from.debit(amount)
-        }
+  val accountsRef = Ref(Map("from" -> new Account("from", 500), "to" -> new Account("to", 500) ))
+  
+  def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+    val accounts = atomic{ implicit t => 
+      var accounts = accountsRef() 
+      val from = accounts(fromNo)
+      val to = accounts(toNo)
+      if(from.balance > amount){
+        from.debit(amount)
+        to.credit(amount)
+        accounts = accounts + (from.accountNo -> from)
+        accounts = accounts + (to.accountNo -> to)
       }
+      accountsRef() = accounts
     }
   }
   
@@ -24,26 +29,26 @@ class Account(val accountNo: String, beginningBalance: Int){
   def balance = this.synchronized{ _balance }
   def credit(amount: Int) = this.synchronized{ _balance = _balance + amount }
   def debit(amount: Int) = this.synchronized { _balance = _balance - amount }
+  override def toString = "Account(%s,%s)".format(accountNo, _balance)
 }
 
 object STM extends App{
-  val account1 = new Account("1", 500)
-  val account2 = new Account("2", 500)
-  
-  val threadPool = Executors.newCachedThreadPool
+  import scala.util.Random._
+  val threadPool = Executors.newFixedThreadPool(2)
 
   def go = {
-    for(i <- 0 until (1000)){
-      if(nextInt(2) % 2 == 0) AccountManager.transfer(account1, account2, nextInt(10))
-      else AccountManager.transfer(account2, account1, nextInt(10))
+    for(i <- 0 until (10000000)){
+      if(nextInt(2) % 2 == 0) AccountManager.transfer("to", "from", 10)
+      else AccountManager.transfer("from", "to", 10)
     }
   }
   
-  val futures = for(_ <- 1 to 100) yield threadPool.submit(new Callable[Unit](){ def call = go })
-  futures.foreach(_.get)
+  val future1 = threadPool.submit(new Callable[Unit](){ def call = go })
+  val future2 = threadPool.submit(new Callable[Unit](){ def call = go})
+
+  future1.get
+  future2.get
   
-  println("Account1 Balance: " + account1.balance)
-  println("Account2 Balance: " + account2.balance)
-  println("Total Balance: " + (account1.balance + account2.balance))
+  println("Balance: " + atomic{implicit t => AccountManager.accountsRef()})
   threadPool.shutdown
-}
+}*/
