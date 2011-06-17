@@ -16,6 +16,42 @@
 	<script src="custom.js"></script> <!-- Use this for your own slide programming -->
 	<base target="_blank">
 	<style type="text/css">
+	  body{
+	    background-color:#FFF;
+	    color:#000;
+	  }
+	  
+	  a{
+	    color:#000;
+	  }
+	  
+	  .pln{
+	    color:#000;
+	  }
+	  
+	  div#pik5-slid{
+	    background-color:#666;
+	  }
+	  
+	  .typ{
+	    color:#000;
+	  }
+	  
+	  .pun{
+	    color:#000;
+	  }
+	  
+	  .lit{
+	    color:#000;
+	  }
+	  
+	  .kwd{
+	    color:#000;
+	  }
+	  
+	  .str{
+	    color:#000;
+	  }
 	</style>
 </head>
 <body onload="prettyPrint()"> <!-- You can remove the onload property if your presentation is not about programming -->
@@ -60,6 +96,27 @@ object Server extends App{
   Http(8080).filter(Planify{
     case Path("/hello.html") => ResponseString("Hello, World!")
   }).run
+
+}
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+	<h2>What's a plan?</h2>
+	<a href="/hello2.html">example</a>
+	<code class="prettyprint">
+	  <pre class="prettyprint">
+
+class ExamplePlan extends unfiltered.filter.Plan{
+  def intent = {
+    case Path("/hello2.html") => ResponseString("Hello, World!")
+  }
+}
+
+object Server extends App{
+
+  Http(8080).filter(new ExamplePlan).run
 
 }
     </pre>

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Unfiltered Presentation by Dustin Whitney</title>
+	<title>STM Presentation by Dustin Whitney</title>
 	<meta http-equiv="expires" content="0"> <!-- DO NOT DELETE THIS! -->
 	<link rel="stylesheet" href="assets/prettify/prettify.css"> <!-- You can remove this if your presentation is not about programming -->
 	<link rel="stylesheet" media="screen, projection" href="assets/css/pik5.css"> <!-- DO NOT DELETE THIS! -->
@@ -16,13 +16,60 @@
 	<script src="custom.js"></script> <!-- Use this for your own slide programming -->
 	<base target="_blank">
 	<style type="text/css">
+	  body{
+	    background-color:#FFF;
+	    color:#000;
+	  }
+	  
+	  a{
+	    color:#000;
+	  }
+	  
+	  .pln{
+	    color:#000;
+	  }
+	  
+	  div#pik5-slid{
+	    background-color:#666;
+	  }
+	  
+	  code{
+	    position:relative;
+	    top:-25px;
+	  }
+	  
+	  .typ{
+	    color:#000;
+	  }
+	  
+	  .pun{
+	    color:#000;
+	  }
+	  
+	  .lit{
+	    color:#000;
+	  }
+	  
+	  .kwd{
+	    color:#000;
+	  }
+	  
+	  .str{
+	    color:#000;
+	  }
+	  
+	  h2{
+	    margin:0;
+	    padding:0;
+	  }
+	  
 	</style>
 </head>
 <body onload="prettyPrint()"> <!-- You can remove the onload property if your presentation is not about programming -->
 
 
 <div id="header">
-	<h1>Unfiltered Presentation for Scala eXchange</h1>
+	<h1>STM Presentation for Scala eXchange</h1>
 	<a href="http://twitter.com/dustinwhitney">@dustinwhitney</a>
 </div>
 
@@ -37,7 +84,9 @@
   <h2><a href="https://github.com/n8han/Unfiltered">STM</a></h2>
 	<p style="font-size:x-large">Dustin Whitney, CTO Trust Metrics, <a href="http://twitter.com/dustinwhtney">@dustinwhitney</a></p>
 	<p style="font-size:x-large">
-		Just a place holder
+		Brian Goetz: http://www.infoq.com/presentations/goetz-concurrency-past-present<br/>
+		Scala STM: http://nbronson.github.com/scala-stm/<br/>
+		Akka: http://akka.io
 	</p>
 </div>
 
@@ -73,12 +122,15 @@
 	<code class="prettyprint">
 	  <pre class="prettyprint" style="font-size:medium">
       object AccountManager{
+        
+        val accounts = Map("from" -> new Account("from", 500), "to" -> new Account("to", 500) )
 
-        def transfer(from: Account, to: Account, amount: Int): Unit = {
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          val (from, to) = (accounts(fromNo), accounts(toNo))
           if(from.balance > amount){
             to.credit(amount)
             from.debit(amount)
-          }else throw new RuntimeException("Balance too low!")
+          }
         }
 
       }
@@ -98,8 +150,11 @@
 	<code class="prettyprint">
 	  <pre class="prettyprint" style="font-size:medium">
       object AccountManager{
+        
+        val accounts = Map("from" -> new Account("from", 500), "to" -> new Account("to", 500) )
 
-        def transfer(from: Account, to: Account, amount: Int): Unit = {
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          val (from, to) = (accounts(fromNo), accounts(toNo))
           to.synchronized{
             from.synchronized{
               if(from.balance > amount){
@@ -127,8 +182,11 @@
 	<code class="prettyprint">
 	  <pre class="prettyprint" style="font-size:medium">
       object AccountManager{
+        
+        val accounts = Map("from" -> new Account("from", 500), "to" -> new Account("to", 500) )
 
-        def transfer(from: Account, to: Account, amount: Int): Unit = {
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          val (from, to) = (accounts(fromNo), accounts(toNo))
           val (lockOne, lockTwo) = if(from.accountNo < to.accountNo) (from, to) else (to, from)
           lockOne.synchronized{
             lockTwo.synchronized{
@@ -153,12 +211,15 @@
 </div>
 
 <div class="pik5-slide">
-	<h2>Fixed</h2>
+	<h2>Fixed with Actors</h2>
 	<code class="prettyprint">
 	  <pre class="prettyprint" style="font-size:medium">
       object AccountManager{
+        
+        val accounts = Map("from" -> new Account("from", 500), "to" -> new Account("to", 500) )
 
-        def transfer(from: Account, to: Account, amount: Int): Unit = {
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          val (from, to) = (accounts(fromNo), accounts(toNo))
           val balance = (from !? Balance).asInstanceOf[Int]
           if(balance > amount){
             to ! Credit(amount)
@@ -185,6 +246,130 @@
           }
         }
       }
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+	<h2>Fixed with STM</h2>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:medium">
+      object AccountManager{
+
+        val accountsRef = Ref(Map("from" -> Account("from", 500), "to" -> Account("to", 500) ))
+
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          atomic{ implicit t =>
+            var accounts = accountsRef()
+            val (from, to) = (accounts(fromNo), accounts(toNo))
+            if(from.balance > amount){
+              accounts = accounts + (to.accountNo -> to.credit(amount))
+              accounts = accounts + (from.accountNo -> from.debit(amount))
+              accountsRef() = accounts
+            }
+          }
+        }
+
+      }
+
+      case class Account(accountNo: String, balance: Int){
+        def credit(amount: Int) = this.copy(balance = (balance + amount))
+        def debit(amount: Int) = this.copy(balance = (balance - amount))
+      }
+    }
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+	<h2>No Side Effects!</h2>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:medium">
+      object AccountManager{
+
+        val accountsRef = Ref(Map("from" -> Account("from", 500), "to" -> Account("to", 500) ))
+
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          atomic{ implicit t =>
+            var accounts = accountsRef()
+            val (from, to) = (accounts(fromNo), accounts(toNo))
+            if(from.balance > amount){
+              accounts = accounts + (to.accountNo -> to.credit(amount))
+              accounts = accounts + (from.accountNo -> from.debit(amount))
+              accountsRef() = accounts
+              applyTransferFeeWebService()
+            }
+          }
+        }
+
+      }
+
+      case class Account(accountNo: String, balance: Int){
+        def credit(amount: Int) = this.copy(balance = (balance + amount))
+        def debit(amount: Int) = this.copy(balance = (balance - amount))
+      }
+    }
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+	<h2>No Mutable Data!</h2>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:medium">
+
+      case class Account(accountNo: String, balance: Int, lastModified: java.util.Date){
+        def credit(amount: Int) = this.copy(balance = (balance + amount))
+        def debit(amount: Int) = this.copy(balance = (balance - amount))
+      }
+      
+      class Account(val accountNo: String, beginningBalance: Int){
+        private var _balance = beginningBalance
+        def balance = this.synchronized{ _balance }
+        def credit(amount: Int) = this.synchronized{ _balance = _balance + amount }
+        def debit(amount: Int) = this.synchronized { _balance = _balance - amount }
+      }
+      
+      <hr/>
+      <p>However, this is ok!</p>
+      
+      class Account(val accountNo: String, beginningBalance: Int){
+        private val _balance = Ref(beginningBalance)
+        def balance = atomic{ implicit t => _balance() }
+        def credit(amount: Int) = atomic{ implicit t => _balance() = _balance() + amount }
+        def debit(amount: Int) = atomic{ _balance() = _balance() - amount }
+      }
+    </pre>
+	</code>
+</div>
+
+<div class="pik5-slide">
+	<h2>Race Condition</h2>
+	<code class="prettyprint">
+	  <pre class="prettyprint" style="font-size:medium">
+      object AccountManager{
+
+        val accountsRef = Ref(Map("from" -> Account("from", 500), "to" -> Account("to", 500) ))
+
+        def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
+          var accounts = atomict{ implicit t => accountsRef() }
+          val (from, to) = (accounts(fromNo), accounts(toNo))
+          if(from.balance > amount){
+            atomic{ implicit t =>
+              accounts = accounts + (to.accountNo -> to.credit(amount))
+              accounts = accounts + (from.accountNo -> from.debit(amount))
+              accountsRef() = accounts
+            }
+          }
+        }
+
+      }
+
+      case class Account(accountNo: String, balance: Int){
+        def credit(amount: Int) = this.copy(balance = (balance + amount))
+        def debit(amount: Int) = this.copy(balance = (balance - amount))
+      }
+    }
     </pre>
 	</code>
 </div>

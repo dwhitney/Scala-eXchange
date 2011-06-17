@@ -1,5 +1,5 @@
 //import java.util.concurrent._
-/*import scala.actors.Actor
+import scala.actors.Actor
 import scala.actors.Actor._
 import scala.concurrent.stm._
 
@@ -136,8 +136,7 @@ package stm.example7{
     def transfer(fromNo: String, toNo: String, amount: Int): Unit = {
       atomic{ implicit t =>
         var accounts = accountsRef()
-        val from = accounts(fromNo)
-        val to = accounts(toNo)
+        val (from, to) = (accounts(fromNo), accounts(toNo))
         if(from.balance > amount){
           accounts = accounts + (to.accountNo -> to.credit(amount))
           accounts = accounts + (from.accountNo -> from.debit(amount))
@@ -210,4 +209,4 @@ package stm.example9{
     def debit(amount: Int) = this.synchronized { _balance = _balance - amount }
     override def toString = "Account(%s,%s)".format(accountNo, _balance)
   }
-}*/
+}

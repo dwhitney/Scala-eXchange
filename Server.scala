@@ -14,6 +14,7 @@ object Server extends Application{
   server
     .filter(example1)
     .filter(example2)
+    .filter(new ExamplePlan)
     .filter(example3)
     .filter(example4)
     .filter(example5)
@@ -28,6 +29,12 @@ object Server extends Application{
   lazy val example2 = Planify{
     case Path("/unfiltered/example2.html") => 
       Ok ~> ContentType("application/json") ~> Json((0 to 100))
+  }
+  
+  class ExamplePlan extends unfiltered.filter.Plan{
+    def intent = {
+      case Path("/hello2.html") => ResponseString("Hello, World!")
+    }
   }
   
   object IntOnly{
